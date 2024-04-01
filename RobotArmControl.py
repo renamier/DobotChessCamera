@@ -29,7 +29,7 @@ class RobotArmControl:
     def connect_dobot(self):
         if not self.is_connected:
             try:
-                self.device = pydobot.Dobot(port=self.port, verbose=True)
+                self.device = pydobot.Dobot(port=self.port, verbose=False)
                 self.is_connected = True
                 print("Connected to the device successfully.")
            
@@ -109,7 +109,39 @@ class RobotArmControl:
                 }
       return coordinates[position]
 
-   
+    def remove_piece(self, position):
+        arm_coords = self.chess_position_to_coordinates(position)
+        print(f"Removing from {arm_coords}")
+        self.device.move_to(float(arm_coords['x1']), float(arm_coords['y1']), float(arm_coords['z1']), float(arm_coords['r1']))
+
+        # open gripper
+        self.device.suck(True) # open the gripper
+        self.device.grip(False)
+        self.device.wait(500)
+        self.device.suck(False)
+
+        # drop down
+        self.device.move_to(float(arm_coords['x1']), float(arm_coords['y1']), -30, float(arm_coords['r1']))
+
+        # close gripper
+        self.device.grip(True) # close the gripper
+        self.device.wait(500)
+        self.device.suck(False)
+
+        # pull up
+        self.device.move_to(float(arm_coords['x1']), float(arm_coords['y1']), 25, float(arm_coords['r1']))
+
+        #move outside the board
+        self.device.move_to(+190.00, -190.00, +035.00, +043.00)
+
+        # open gripper
+        self.device.suck(True) # open the gripper
+        self.device.grip(False)
+        self.device.wait(500)
+        self.device.suck(False)
+
+
+        return True
         
     def execute_move(self, position):
          self.connect_dobot()
