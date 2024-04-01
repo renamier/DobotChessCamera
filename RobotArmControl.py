@@ -157,7 +157,7 @@ class RobotArmControl:
                 # pull up
                 self.device.move_to(float(end_arm_coords['x1']), float(end_arm_coords['y1']), 25, float(end_arm_coords['r1']))
                 self.device.wait(500)
-                self.device.move_to(112.81,195.04, 25, float(end_arm_coords['r1']))
+                self.device.move_to(+190.00, -190.00, +019.00, +043.00)
 
                 # close gripper
 
